@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css">
+
+    <!-- Font Awesome JS -->
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <!-- jQuery CDN - Slim version (=without AJAX) -->
+
+
+    <title></title>
+    <style>
+        .modal-backdrop.show {
+            width: 100%;
+        }
+
+        @media (max-width: 767px) {
+            .carousel-inner .carousel-item>div {
+                display: none;
+            }
+
+            .carousel-inner .carousel-item>div:first-child {
+                display: block;
+            }
+        }
+
+        .carousel-inner .carousel-item.active,
+        .carousel-inner .carousel-item-next,
+        .carousel-inner .carousel-item-prev {
+            display: flex;
+        }
+
+        /* medium and up screens */
+        @media (min-width: 768px) {
+
+            .carousel-inner .carousel-item-end.active,
+            .carousel-inner .carousel-item-next {
+                transform: translateX(25%);
+            }
+
+            .carousel-inner .carousel-item-start.active,
+            .carousel-inner .carousel-item-prev {
+                transform: translateX(-25%);
+            }
+        }
+
+        .carousel-inner .carousel-item-end,
+        .carousel-inner .carousel-item-start {
+            transform: translateX(0);
+        }
+
+        @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
+
+        :root {
+            --header-height: 3rem;
+            --nav-width: 68px;
+            --first-color: #4723D9;
+            --first-color-light: #AFA5D9;
+            --white-color: #F7F6FB;
+            --body-font: 'Nunito', sans-serif;
+            --normal-font-size: 1rem;
+            --z-fixed: 100
+        }
+
+        *,
+        ::before,
+        ::after {
+            box-sizing: border-box
+        }
+
+        body {
+            position: relative;
+            margin: var(--header-height) 0 0 0;
+            padding: 0 1rem;
+            font-family: var(--body-font);
+            font-size: var(--normal-font-size);
+            transition: .5s
+        }
+
+        a {
+            text-decoration: none
+        }
+
+        .header {
+            width: 100%;
+            height: var(--header-height);
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+            background-color: var(--white-color);
+            z-index: var(--z-fixed);
+            transition: .5s
+        }
+
+        .header_toggle {
+            color: var(--first-color);
+            font-size: 1.5rem;
+            cursor: pointer
+        }
+
+        .header_img {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            justify-content: center;
+            border-radius: 50%;
+            overflow: hidden
+        }
+
+        .header_img img {
+            width: 40px
+        }
+
+        .l-navbar {
+            position: fixed;
+            top: 0;
+            left: -30%;
+            width: var(--nav-width);
+            height: 100vh;
+            background-color: var(--first-color);
+            padding: .5rem 1rem 0 0;
+            transition: .5s;
+            z-index: var(--z-fixed)
+        }
+
+        .nav {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden
+        }
+
+        .nav_logo,
+        .nav_link {
+            display: grid;
+            grid-template-columns: max-content max-content;
+            align-items: center;
+            column-gap: 1rem;
+            padding: .5rem 0 .5rem 1.5rem
+        }
+
+        .nav_logo {
+            margin-bottom: 2rem
+        }
+
+        .nav_logo-icon {
+            font-size: 1.25rem;
+            color: var(--white-color)
+        }
+
+        .nav_logo-name {
+            color: var(--white-color);
+            font-weight: 700
+        }
+
+        .nav_link {
+            position: relative;
+            color: var(--first-color-light);
+            margin-bottom: 1.5rem;
+            transition: .3s
+        }
+
+        .nav_link:hover {
+            color: var(--white-color)
+        }
+
+        .nav_icon {
+            font-size: 1.25rem
+        }
+
+        .show {
+            left: 0
+        }
+
+        .body-pd {
+            padding-left: calc(var(--nav-width) + 1rem)
+        }
+
+        .active {
+            color: var(--white-color)
+        }
+
+        .active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 2px;
+            height: 32px;
+            background-color: var(--white-color)
+        }
+
+        .height-100 {
+            height: 100vh
+        }
+
+        .content:hover {
+            box-shadow: 0 2px 8px 0 rgba(0, 0, 0, .24)
+        }
+
+        @media screen and (min-width: 768px) {
+            body {
+                margin: calc(var(--header-height) + 1rem) 0 0 0;
+                padding-left: calc(var(--nav-width) + 2rem)
+            }
+
+            .header {
+                height: calc(var(--header-height) + 1rem);
+                padding: 0 2rem 0 calc(var(--nav-width) + 2rem)
+            }
+
+            .header_img {
+                width: 40px;
+                height: 40px
+            }
+
+            .header_img img {
+                width: 45px
+            }
+
+            .l-navbar {
+                left: 0;
+                padding: 1rem 1rem 0 0
+            }
+
+            .show {
+                width: calc(var(--nav-width) + 156px)
+            }
+
+            .body-pd {
+                padding-left: calc(var(--nav-width) + 188px)
+            }
+        }
+        
+         .allcate {
+			position: relative;
+			z-index: 99;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.menu {
+
+			text-align: center;
+			line-height: 40px;
+			height: 40px;
+			width: 9em;
+
+		}
+
+		.menu .ico-cate {
+			margin-left: 2em;
+		}
+
+		.allcate .subnav {
+			width: 9em;
+			position: relative;
+			background-color: #fff;
+			border-top: 1px solid #363636;
+			border-bottom: 1px solid #363636;
+			border-right: 1px solid #363636;
+			border-left: 1px solid #363636;
+			display: none;
+			z-index: 10;
+			/* overflow: hidden; */
+		}
+
+		.allcate:hover .subnav {
+
+			display: block;
+			/* animation: huver .3s  alternate forwards; */
+
+
+		}
+
+		.subnav .subnav_ctn {
+			height: 100%;
+			width: 100%;
+		}
+
+		.list_cate {
+			margin:0px;
+			padding: 0%;
+			list-style: none;
+			text-transform: none;
+			font-family: Arial, Helvetica, sans-serif;
+			font-size: 14px;
+			text-align: left;
+		}
+
+		.list_cate a {
+			display: block;
+			height: 40px;
+			line-height: 2;
+			padding: .5em 1em;
+			border-bottom: 1px solid #e7e7e7;
+			color: #000;
+		}
+
+		.list_cate a:hover {
+			background-color: #e7e7e7;
+		}
+    </style>
+</head>
+
+
+<body id="body-pd">
+    <header class="header" id="header">
+        <div class="header_toggle"> <i class='bx bx-menu' id="header-toggle"></i> </div>
+       <div class="allcate"  sec:authorize="isAuthenticated()">
+			<div class="menu"><a sec:authentication="principal.username"/></a>
+				<i class="fas fa-caret-down"></i>
+				<div class="subnav">
+					<div class="subnav_ctn">
+						<ul class="list_cate">
+							<li class="loai" sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/admin/place}">Quản lý place</a></li>
+							<li class="loai" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_MODERATOR')"><a th:href="@{/admin/tour}">Quản lý Tour</a></li>
+							<li class="loai"><a th:href="@{/user/profile}" sec:authorize="hasRole('ROLE_USER')">Thông tin cá nhân</a></li>
+							<li class="loai"><a th:href="@{/auth/logout}">Đăng xuất</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div sec:authorize="!isAuthenticated()">
+			<a th:href="@{/auth/formsignin}">Đăng nhập</a><a> / </a>
+			<a th:href="@{/auth/formsignup}">Đăng ký</a>
+		</div>
+    </header>
+    <div class="l-navbar" id="nav-bar">
+        <nav class="nav">
+            <div> <a th:href="@{/place}" class="nav_logo"> <i class='bx bx-layer nav_logo-icon'></i> <span
+                        class="nav_logo-name">Travel Hue</span> </a>
+                <div class="nav_list"> <a th:href="@{/place}" class="nav_link"> <i
+                            class="fas fa-camera-retro"></i>
+                        <span class="nav_name">Địa điểm tham quan</span> </a> <a th:href="@{/hotel}"
+                        class="nav_link active"> <i class="fas fa-bed"></i> <span class="nav_name">Khách sạn</span> </a>
+                    <a th:href="@{/food}" class="nav_link"> <i class="fas fa-drumstick-bite"></i> <span
+                            class="nav_name">Thức ăn</span>
+                    </a> <a th:href="@{/tour}" class="nav_link"> <i class="fas fa-torii-gate"></i> <span
+                            class="nav_name">Tour</span> </a>
+                    <a th:href="@{/booking/listbooking}" class="nav_link"> <i class='bx bx-bar-chart-alt-2 nav_icon'></i> <span
+                            class="nav_name">Stats</span> </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!--Container Main start-->
+    <div class="height-100 bg-light">
+    	<div style="display: flex; justify-content: space-around;">
+        	<h2>Hotel du lịch ở thừa thiên huế</h2>
+    		<form action="#" th:action="@{/hotel/search}" method="get"
+				style="display: flex; justify-content: space-around;">
+				<input class="form-control col-11" type="text" name="keyword"
+					placeholder="Nhập từ khóa tìm kiếm" style="border-radius: 16px;">
+				<button type="submit" class="btn btn-primary" style="margin-left: 5px; border-radius: 16px;">
+					<i class="fas fa-search"></i>
+				</button>
+			</form>
+    	</div>
+        <div class="container"
+            style="cursor: pointer;align-content: center;display: flex;flex-wrap: wrap;width: calc(100% + 16px);margin: 8px -8px;justify-content: center;flex-direction: column;">
+            <div class="content" th:each="hotel : ${hotelList}"
+                style="display: flex; justify-content: flex-start; width: 1000px; height: 220px; flex-direction: row; margin: 8px; border: solid 1px; border-radius: 20px; border-color: #dadce0;">
+                <div class="img-content">
+                    <img style=" height: 100%; width: 320px; border-radius: 20px;"
+                        th:src="${hotel.image}">
+                </div>
+                <div class="text-content" style="padding: 20px; display: flex; flex-direction: column; width: 100%; justify-content: space-between;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <h4 th:text="${hotel.title}"></h4>
+                        <a th:text="${hotel.price}+' VND'" style=" color: rgb(255, 94, 31); font-weight: 600"> đ</a>
+                    </div> 
+                    <div style="display: flex; width: 80%;flex-wrap: wrap;">
+                        <div style="width: 170px;" th:each="category : ${hotel.categories}">
+                            <a style="font-size: 14px;color: #757575;"><i th:class="${category.codeName}"><span th:text="'  '+ ${category.name}"></span></i></a>
+                        </div>
+                    </div>
+                    <div style="display: flex;justify-content: flex-end;">
+                        <div style="background-color: lightskyblue;padding: 5px 10px 5px 10px;border-radius: 20px;" data-bs-toggle="modal" th:data-bs-target="'#myModal-'+${hotel.id}">Xem chi tiết</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:if="${#lists.isEmpty(hotelList)}"  class="alert alert-danger">
+					<p>Xin lỗi, không tìm thấy kết quả nào!!</p>	
+				</div>
+				<div th:if="${totalPages > 1}">
+					<div style="display: flex; justify-content: center;">
+						<nav aria-label="Page navigation example"
+							th:if="${totalPages > 1}">
+							<ul class="pagination">
+								<li class="page-item"><a class="page-link"
+									th:if="${currentPage > 1}"
+									th:href="@{'/hotel/page/' + ${currentPage - 1}+ '?keyword='+${keyword}}"
+									aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+										<span class="sr-only">Previous</span>
+								</a></li>
+
+								<li th:each="i: ${#numbers.sequence(1, totalPages)}"
+									th:class="${i == currentPage} ? 'page-item active' : 'page-item'"><a
+									class="page-link"
+									th:href="@{'/hotel/page/' + ${i}+ '?keyword='+${keyword}}">[[${i}]]</a>
+								</li>
+								<li class="page-item"><a class="page-link"
+									th:if="${currentPage < totalPages}"
+									th:href="@{'/hotel/page/' + ${currentPage + 1}+ '?keyword='+${keyword}}"
+									aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+										<span class="sr-only">Next</span>
+								</a></li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+    </div>
+    <div th:each="hotel : ${hotelList}">
+		<!-- The Modal -->
+		<div class="modal" th:id="'myModal-'+${hotel.id}" style="width: 100%;">
+			<div class="modal-dialog modal-dialog-scrollable modal-xl">
+				<div class="modal-content">
+
+					<!-- Modal Header -->
+					<div class="modal-header">
+						<h4 class="modal-title" th:text="${hotel.title}"></h4>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+					</div>
+
+					<!-- Modal body -->
+					<div class="modal-body">
+						<img alt="" th:src="${hotel.image}" style="width: 100%">
+						<div class="container text-center my-3">
+							<div class="row mx-auto my-auto justify-content-center">
+								<div th:id="'recipeCarousel'+${hotel.id}" class="carousel slide"
+									data-bs-ride="carousel">
+									<div class="carousel-inner" role="listbox">
+										<div class="carousel-item active">
+											<div class="col-md-3">
+												<div class="card">
+													<div class="card-img">
+														<img th:src="${hotel.image}" class="img-fluid"
+															style="height: 200px">
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="carousel-item"
+											th:each="image : ${hotel.listImageHotel}">
+											<div class="col-md-3">
+												<div class="card">
+													<div class="card-img">
+														<img th:src="${image.urlImage}" class="img-fluid"
+															style="height: 200px">
+													</div>
+												</div>
+											</div>
+										</div>
+
+									</div>
+									<a class="carousel-control-prev bg-transparent w-aut"
+										th:href="'#recipeCarousel'+${hotel.id}" role="button"
+										data-bs-slide="prev"> <span
+										class="carousel-control-prev-icon" aria-hidden="true"></span>
+									</a> <a class="carousel-control-next bg-transparent w-aut"
+										th:href="'#recipeCarousel'+${hotel.id}" role="button"
+										data-bs-slide="next"> <span
+										class="carousel-control-next-icon" aria-hidden="true"></span>
+									</a>
+								</div>
+							</div>
+						</div>
+						<div style="display: flex;justify-content: space-around;padding-top: 15px;">
+						
+							<div th:utext="${hotel.description}" style="padding: 10px;width: 60%; overflow: auto;"></div>
+							<div style="width: 35%;">
+								<div style=" background-color: #e3e3e3;padding: 20px; margin-bottom: 15px;;border-radius: 10px; ">
+									<a style="font-weight: 600;font-size: 16px;">Chi tiết tiện ích</a>
+									 <div style="display: flex;flex-wrap: wrap">
+
+				                        <div style="width: 170px;" th:each="category : ${hotel.categories}">
+				                            <a style="font-size: 14px;color: #757575;"><i th:class="${category.codeName}"><span th:text="'  '+ ${category.name}"></span></i></a>
+				                        </div>
+				                    </div>
+								</div>
+								<div class="content-comment"
+									style="display: flex; flex-direction: column;margin-bottom: 21px;padding: 20px;    background-color: #e3e3e3;border-radius: 10px;">
+									<a style="padding-bottom: 10px;"> Ý kiến chia sẻ của khách du lịch </a>
+									<div class="comment">
+										<form th:action="@{/reviewhotels/{id}(id=${hotel.id})}" method="post">
+											<div class="form-group" style="padding-bottom: 10px;">
+												<textarea
+													placeholder="Hãy bình luận văn minh để tránh bay màu tài khoản"
+													rows="" cols="" class="form-control" id="content" name="content" 
+													required></textarea>
+											</div>
+											<div class="form-group">
+												<button type="submit" class="btn btn-success">Bình luận</button>
+											</div>
+										</form>
+									</div>
+									<div style="display: flex; flex-direction: column-reverse;">
+										<div th:each="comment : ${hotel.comments}"
+											style="padding: 10px; background-color: #c6c0c0; border-radius: 10px; margin: 5px 0px 10px 0px;">
+											<b th:text="${comment.createdBy}"></b> <br> <b
+												th:text="${#dates.format(comment.createdDate, 'HH:mm:ss dd/MM/yyyy')}"></b>
+											<hr>
+											<b th:text="${comment.content}"></b>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+    <script>
+        let items = document.querySelectorAll('.carousel .carousel-item')
+
+        items.forEach((el) => {
+            const minPerSlide = 4
+            let next = el.nextElementSibling
+            for (var i = 1; i < minPerSlide; i++) {
+                if (!next) {
+                    // wrap carousel by using first child
+                    next = items[0]
+                }
+                let cloneChild = next.cloneNode(true)
+                el.appendChild(cloneChild.children[0])
+                next = next.nextElementSibling
+            }
+        })
+    </script>
+    <!--Container Main end-->
+    <script>
+        document.addEventListener("DOMContentLoaded", function (event) {
+
+            const showNavbar = (toggleId, navId, bodyId, headerId) => {
+                const toggle = document.getElementById(toggleId),
+                    nav = document.getElementById(navId),
+                    bodypd = document.getElementById(bodyId),
+                    headerpd = document.getElementById(headerId)
+
+                // Validate that all variables exist
+                if (toggle && nav && bodypd && headerpd) {
+                    toggle.addEventListener('click', () => {
+                        // show navbar
+                        nav.classList.toggle('show')
+                        // change icon
+                        toggle.classList.toggle('bx-x')
+                        // add padding to body
+                        bodypd.classList.toggle('body-pd')
+                        // add padding to header
+                        headerpd.classList.toggle('body-pd')
+                    })
+                }
+            }
+
+            showNavbar('header-toggle', 'nav-bar', 'body-pd', 'header')
+
+            /*===== LINK ACTIVE =====*/
+            const linkColor = document.querySelectorAll('.nav_link')
+
+            function colorLink() {
+                if (linkColor) {
+                    linkColor.forEach(l => l.classList.remove('active'))
+                    this.classList.add('active')
+                }
+            }
+            linkColor.forEach(l => l.addEventListener('click', colorLink))
+
+            // Your code to run since DOM is loaded and ready
+        });
+    </script>
+</body>
+
+</html>
