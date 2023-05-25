@@ -65,7 +65,7 @@ public class Tour {
 //	private List<Booking> bookings;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "tour", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<CommentTour> comments;
 	
 
