@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.husc.models.ERole;
 import com.husc.models.Role;
@@ -57,21 +58,23 @@ public class AuthController {
 	JwtUtils jwtUtils;
 
 	@GetMapping("/formsignin")
-	public String showformsignin(Model model, HttpServletRequest request) {
+	public String showformsignin(@ModelAttribute("status") String status,Model model, HttpServletRequest request) {
 		String token = jwtUtils.getJwtFromCookies(request);
     	if (token == null || token.isEmpty()) {
     		LoginRequest loginRequest = new LoginRequest();
     		model.addAttribute("user", loginRequest);
+    		model.addAttribute("status", status);
     		return "signin";
     	}
     	return "redirect:/place";
 	}
 
 	@GetMapping("/formsignup")
-	public String showRegistrationForm(Model model,HttpServletRequest request) {
+	public String showRegistrationForm(@ModelAttribute("status") String status,Model model,HttpServletRequest request) {
 		String token = jwtUtils.getJwtFromCookies(request);
 		if(token == null || token.isEmpty()) {
 			SignupRequest signupRequest = new SignupRequest();
+			model.addAttribute("status", status);
 			model.addAttribute("user", signupRequest);
 			return "signup";
 		}
@@ -81,7 +84,7 @@ public class AuthController {
 
 	@PostMapping("/signin")
 	public String authenticateUser(@Valid @RequestParam String username, @RequestParam String password,
-			HttpServletResponse httpServletResponse, Model model) {
+			HttpServletResponse httpServletResponse, RedirectAttributes redirectAttributes) {
 		LoginRequest loginRequest = new LoginRequest();
 		loginRequest.setPassword(password);
 		loginRequest.setUsername(username);
@@ -98,7 +101,8 @@ public class AuthController {
 			httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
 			return "redirect:/place";
 		} catch (AuthenticationException e) {
-			model.addAttribute("status", false);
+			 // Thêm dữ liệu vào model
+			redirectAttributes.addFlashAttribute("status", "failed");
 			return "redirect:/auth/formsignin";
 		}
 
@@ -113,16 +117,19 @@ public class AuthController {
 	}
 
 	@PostMapping("/signup")
-	public String registerUser(@Valid @ModelAttribute("user") SignupRequest signUpRequest) {
+	public String registerUser(@Valid @ModelAttribute("user") SignupRequest signUpRequest,RedirectAttributes redirectAttributes) {
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-			return "redirect:/api/auth";
+			redirectAttributes.addFlashAttribute("status", "username");
+			return "redirect:/auth/formsignup";
 		}
 
 		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-			return "redirect:/api/auth";
+			redirectAttributes.addFlashAttribute("status", "email");
+			return "redirect:/auth/formsignup";
 		}
 		if (userRepository.existsByNumberPhone(signUpRequest.getNumberPhone())) {
-			return "redirect:/api/auth";
+			redirectAttributes.addFlashAttribute("status", "phone");
+			return "redirect:/auth/formsignup";
 		}
 
 		// Create new user's account
