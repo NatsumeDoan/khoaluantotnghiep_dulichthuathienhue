@@ -60,7 +60,7 @@ public class Place  {
 	private List<ListImagePlace> listImagePlace;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "place", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "place", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<CommentPlace> comments;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
