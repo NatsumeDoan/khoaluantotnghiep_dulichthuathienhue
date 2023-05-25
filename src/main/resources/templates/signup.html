@@ -214,6 +214,14 @@ a {
 			<a th:href="@{/auth/formsignin}" class="signup"> Back to login page </a>
 		</div>
 	</div>
+	<input type="hidden" id="status" th:value="${status}">
+   	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> 
+    	<script type="text/javascript"> 
+    		var status = document.getElementById("status").value;
+    		if(status=="username") { swal("Lỗi","Tên tài khoản đã tồn tại","error"); } 
+    		if(status=="phone") { swal("Lỗi","Số điện thoại đã tồn tại","error"); } 
+    		if(status=="email") { swal("Lỗi","Email đã tồn tại","error"); } 
+   	 </script>
 </body>
 
 </html>
