@@ -184,14 +184,12 @@ a {
 			<a th:href="@{/auth/formsignup}" class="signup"> create a new account </a>
 		</div>
 	</div>	
-	 <div th:if="${status == 'false'}">
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h3>Thông báo</h3>
-                <p>Param có giá trị "false".</p>
-            </div>
-        </div>
+	<input type="hidden" id="status" th:value="${status}">
+   	 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> 
+   	 <script type="text/javascript"> 
+    		var status = document.getElementById("status").value;
+    		if(status=="failed") { swal("Lỗi","Sai Tên Đăng Nhập Hoặc Mật Khẩu","error"); } 
+    	</script>
     </div>
 </body>
 </html>
