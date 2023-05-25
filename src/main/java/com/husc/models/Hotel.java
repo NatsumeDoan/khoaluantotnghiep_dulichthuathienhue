@@ -68,7 +68,7 @@ public class Hotel {
 	private List<ListImageHotel> listImageHotel;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<CommentHotel> comments;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
