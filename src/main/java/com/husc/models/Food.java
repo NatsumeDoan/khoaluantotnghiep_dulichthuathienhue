@@ -59,7 +59,7 @@ public class Food {
 	private List<ListImageFood> listImageFood;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "food", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "food", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<CommentFood> comments;
 
 	@ManyToOne(fetch = FetchType.LAZY)
